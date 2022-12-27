@@ -5,8 +5,7 @@ from django.db import models
 class MVC(models.Model):
     name=models.TextField(null=False,blank=False)
     street1=models.TextField()
-    street2=models.TextField()
-    street3=models.TextField()
+    street2=models.TextField(null=True,blank=True)
     city=models.TextField()
     locationId=models.IntegerField()
 
