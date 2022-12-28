@@ -14,8 +14,8 @@ class MVC(models.Model):
 
 class Record(models.Model):
     locationId=models.ForeignKey(MVC, on_delete=models.CASCADE)
-    time=models.TimeField()
-    createdTime=models.TimeField(auto_now=True)
+    time=models.DateTimeField()
+    createdTime=models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return str(self.locationId)+" "+self.time
+        return str(self.locationId)
