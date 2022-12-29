@@ -37,7 +37,7 @@ def call_crawler():
                 defaults={'locationId': mvc,'earliestTime':availableTime},
             )
             if obj.earliestTime>availableTime:
-                obj.update({'earliestTime':availableTime})
+                obj.earliestTime=availableTime
             obj.save()
         else:
             #should I consider no avilable statement?
