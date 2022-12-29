@@ -1,10 +1,12 @@
 import React, { useState,useEffect } from "react";
+import TableRow from "./TableRow";
+import {default as BSTable} from 'react-bootstrap/Table' ;
 
 function Table(props) {
     //Load data
     let [mvcs, setmvc] = useState([])
     let [times,settime]= useState([])
-
+    let [historys,sethistory]= useState([])
     let getLocation = async () => {
         let response = await fetch('http://127.0.0.1:8000/api/mvc/')
         let data = await response.json()
@@ -15,9 +17,15 @@ function Table(props) {
         let time = await response.json()
         settime(time)
     }
+    let getHistory = async() =>{
+        let response = await fetch('http://127.0.0.1:8000/api/history/')
+        let time = await response.json()
+        sethistory(time)
+    }
     useEffect(() => {
         getLocation();
         getTime();
+        getHistory();
     }, [])
 
     var IdToName = {};
@@ -26,6 +34,16 @@ function Table(props) {
         var locId = processing["id"];
         IdToName[locId] = processing["name"].split("-")[0]
     }
+    var IdToHistory={}
+    for (let i=0;i<historys.length;i++){
+        processing=historys[i];
+        locId= processing["locationId"];
+        if(locId in IdToHistory){
+            IdToHistory[locId].push([processing["day"],processing["earliestTime"]])
+        }else{
+            IdToHistory[locId]=[[processing["day"],processing["earliestTime"]]]
+        }
+    }
     var outputs = []
     for (let i = 0; i < times.length; i++) {
         processing = times[i];
@@ -33,23 +51,18 @@ function Table(props) {
         var output = {}
         output["openTime"] = processing["time"];
         output["location"] = IdToName[locationId];
+        output["history"]=IdToHistory[locationId];
         outputs.push(output);
     }
 
     //end load data
-    const tableBody = outputs.map((info) => {
+    const tableBody = outputs.map((info,index) => {
         return (
-            <tr>
-                <td>{info.location}</td>
-                <td>{info.openTime}</td>
-                <td>{ }</td>
-                <td>{ }</td>
-            </tr>
+            <TableRow key={index} info={info} />
         );
     });
     return (
-        <div className="Table" class="table">
-            <table>
+        <BSTable striped bordered hover>
                 <thead>
                     <tr>
                         <th scope="col">Location</th>
@@ -58,11 +71,10 @@ function Table(props) {
                         <th scope="col">Date Ahead</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {tableBody}
-                </tbody>
-            </table>
-        </div>
+                <th colSpan="4">
+                {tableBody}
+                </th>        
+        </BSTable>
     );
 }
 export default Table;
