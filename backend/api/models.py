@@ -19,3 +19,17 @@ class Record(models.Model):
     
     def __str__(self):
         return str(self.locationId)
+
+class AvaliableNow(models.Model):
+    locationId=models.OneToOneField(MVC,on_delete=models.CASCADE)
+    time=models.DateTimeField()
+
+    def __str__(self):
+        return str(self.locationId)
+
+class EarliestByDay(models.Model):
+    locationId=models.ForeignKey(MVC,on_delete=models.CASCADE)
+    earliestTime=models.DateTimeField()
+    day=models.DateField(auto_now_add=True)
+    def __str__(self):
+        return str(self.locationId)

@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import MVC,Record
-from .serializers import MVCSerializer,RecordSerializer
+from .models import MVC,Record,AvaliableNow,EarliestByDay
+from .serializers import MVCSerializer,AvaliableNowSerializer,EarliestByDaySerializer
 # Create your views here.
 
 @api_view(['GET'])
@@ -12,6 +12,12 @@ def getMVC(request):
 
 @api_view(['GET'])
 def getTime(request):
-    records= Record.objects.all()
-    serializer=RecordSerializer(records,many=True)
+    records= AvaliableNow.objects.all()
+    serializer=AvaliableNowSerializer(records,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getHistory(request):
+    history=EarliestByDay.objects.all()
+    serializer=EarliestByDaySerializer(history,many=True)
     return Response(serializer.data)

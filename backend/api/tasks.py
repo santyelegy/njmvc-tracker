@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 from django.apps import apps
-from datetime import datetime
+from datetime import datetime,date
 
 #@huey.periodic_task(crontab(hour='*/2'))
 @huey.db_periodic_task(crontab(minute='*/30'))
@@ -17,16 +17,28 @@ def call_crawler():
     datas=scripts[1].text.splitlines()[:4]
     output=re.findall('\[.*\]', datas[2])[0]
     timeData=json.loads(output)
-    Record = apps.get_model("api", "Record")
+    #Record = apps.get_model("api", "Record")
     MVC = apps.get_model("api","MVC")
+    AvaliableNow = apps.get_model("api", "AvaliableNow")
+    EarliestByDay = apps.get_model("api", "EarliestByDay")
     for data in timeData:
         availableTime=data["FirstOpenSlot"].split("Next Available: ",1)
         if len(availableTime)>1:
             availableTime=datetime.strptime(availableTime[1], '%m/%d/%Y %I:%M %p')
-            #availableTime.tzinfo=tz.gettz('America/New_York')
             mvc=MVC.objects.get(locationId=data["LocationId"])
-            record=Record.objects.create(locationId=mvc,time=availableTime)
-            record.save()
+            obj, created = AvaliableNow.objects.update_or_create(
+                locationId=mvc,
+                defaults={'locationId':mvc,'time':availableTime},
+            )
+            obj.save()
+            obj, created = EarliestByDay.objects.get_or_create(
+                locationId=mvc,
+                day=date.today(),
+                defaults={'locationId': mvc,'earliestTime':availableTime},
+            )
+            if obj.earliestTime>availableTime:
+                obj.update({'earliestTime':availableTime})
+            obj.save()
         else:
             #should I consider no avilable statement?
             continue
