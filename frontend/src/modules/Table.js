@@ -1,12 +1,21 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import TableRow from "./TableRow";
-import {default as BSTable} from 'react-bootstrap/Table' ;
+import { default as BSTable } from 'react-bootstrap/Table';
+import MapWrapper from "./MapWrapper";
 
 function Table(props) {
     //Load data
-    let [mvcs, setmvc] = useState([])
-    let [times,settime]= useState([])
-    let [historys,sethistory]= useState([])
+    const ref = React.useRef(null);
+    const [map, setMap] = React.useState();
+
+    useEffect(() => {
+        if (ref.current && !map) {
+            setMap(new window.google.maps.Map(ref.current, {}));
+        }
+    }, [ref, map]);
+    let [mvcs, setmvc] = useState([]) 
+    let [times, settime] = useState([])
+    let [historys, sethistory] = useState([])
     let getLocation = async () => {
         let response = await fetch('http://127.0.0.1:8000/api/mvc/')
         let data = await response.json()
@@ -17,7 +26,7 @@ function Table(props) {
         let time = await response.json()
         settime(time)
     }
-    let getHistory = async() =>{
+    let getHistory = async () => {
         let response = await fetch('http://127.0.0.1:8000/api/history/')
         let time = await response.json()
         sethistory(time)
@@ -34,14 +43,14 @@ function Table(props) {
         var locId = processing["id"];
         IdToName[locId] = processing["name"].split("-")[0]
     }
-    var IdToHistory={}
-    for (let i=0;i<historys.length;i++){
-        processing=historys[i];
-        locId= processing["locationId"];
-        if(locId in IdToHistory){
-            IdToHistory[locId].push([processing["day"],processing["earliestTime"]])
-        }else{
-            IdToHistory[locId]=[[processing["day"],processing["earliestTime"]]]
+    var IdToHistory = {}
+    for (let i = 0; i < historys.length; i++) {
+        processing = historys[i];
+        locId = processing["locationId"];
+        if (locId in IdToHistory) {
+            IdToHistory[locId].push([processing["day"], processing["earliestTime"]])
+        } else {
+            IdToHistory[locId] = [[processing["day"], processing["earliestTime"]]]
         }
     }
     var outputs = []
@@ -51,30 +60,33 @@ function Table(props) {
         var output = {}
         output["openTime"] = processing["time"];
         output["location"] = IdToName[locationId];
-        output["history"]=IdToHistory[locationId];
+        output["history"] = IdToHistory[locationId];
         outputs.push(output);
     }
 
     //end load data
-    const tableBody = outputs.map((info,index) => {
+    const tableBody = outputs.map((info, index) => {
         return (
             <TableRow key={index} info={info} />
         );
     });
     return (
+        <>
+        <MapWrapper/>
         <BSTable striped bordered hover>
-                <thead>
-                    <tr>
-                        <th scope="col">Location</th>
-                        <th scope="col">Earliest Date</th>
-                        <th scope="col">Newest Fetch</th>
-                        <th scope="col">Date Ahead</th>
-                    </tr>
-                </thead>
-                <th colSpan="4">
+            <thead>
+                <tr>
+                    <th scope="col">Location</th>
+                    <th scope="col">Earliest Date</th>
+                    <th scope="col">Newest Fetch</th>
+                    <th scope="col">Date Ahead</th>
+                </tr>
+            </thead>
+            <th colSpan="4">
                 {tableBody}
-                </th>        
+            </th>
         </BSTable>
+        </>
     );
 }
 export default Table;
