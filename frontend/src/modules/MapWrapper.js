@@ -1,47 +1,36 @@
 import React from 'react'
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader,Marker } from '@react-google-maps/api';
 
-const containerStyle = {
-  width: '400px',
-  height: '400px'
-};
 
-const center = {
-  lat: -3.745,
-  lng: -38.523
-};
+const mapContainerStyle = {
+  height: "800px",
+  width: "800px"
+}
 
-function MapWrapper() {
+function MapWrapper(props) {
+  
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyAZUmNfcuVyd_kHSsTrRBh0ySprZxraGmQ"
   })
 
-  const [map, setMap] = React.useState(null)
-
-  const onLoad = React.useCallback(function callback(map) {
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    const bounds = new window.google.maps.LatLngBounds(center);
-    map.fitBounds(bounds);
-
-    setMap(map)
-  }, [])
-
-  const onUnmount = React.useCallback(function callback(map) {
-    setMap(null)
-  }, [])
-
+  const markers=props.mvcs.map((mvc,index)=>{
+    var position={lat:mvc.lat,lng:mvc.long}
+    const clickMarker=()=>{
+      props.setactiveKey(props.MVCToIndex[mvc.id]);
+    }
+    return(
+      <Marker key={index} title={mvc.name} position={position} onClick={clickMarker}/>
+    )
+  })
   return isLoaded ? (
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={10}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-      >
-        { /* Child components, such as markers, info windows, etc. */ }
-        <></>
-      </GoogleMap>
+  <GoogleMap
+    mapContainerStyle={mapContainerStyle}
+    zoom={props.zoom}
+    center={props.center}
+  >
+  {markers}
+  </GoogleMap>
   ) : <></>
 }
 

@@ -8,7 +8,8 @@ class MVC(models.Model):
     street2=models.TextField(null=True,blank=True)
     city=models.TextField()
     locationId=models.IntegerField()
-
+    lat=models.FloatField(null=True)
+    long=models.FloatField(null=True)
     def __str__(self):
         return self.name
 

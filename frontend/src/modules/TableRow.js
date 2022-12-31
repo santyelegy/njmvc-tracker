@@ -3,8 +3,15 @@ import ReactECharts from 'echarts-for-react';
 import moment from "moment";
 import Accordion from 'react-bootstrap/Accordion';
 
-function TableRow({ info }) {
+
+
+function TableRow( prop ) {
     //console.log(info.history)
+    const headerClick=()=>{
+        prop.setcenter(prop.info.position);
+        prop.setzoom(11);
+        prop.setactiveKey(prop.index.toString());
+    }
     const option = {
         xAxis: {
             axisLabel: {
@@ -17,28 +24,25 @@ function TableRow({ info }) {
         yAxis: {
             axisLabel: {
                 formatter: axisValue => {
-                    return moment(axisValue).format("YYYY-MM-DD HH:mm");
+                    return moment(axisValue).format("YYYY-MM-DD");
                 }
             },
             type: 'time'
         },
         series: [
             {
-                data: info.history,
+                data: prop.info.history,
                 type: 'line'
             }
         ]
     };
     return (
-        <Accordion defaultActiveKey="0">
-        <Accordion.Item eventKey="0">
-          <Accordion.Header><td>{info.location}</td>
-                <td>{info.openTime}</td></Accordion.Header>
+        <Accordion.Item eventKey={prop.index.toString()}>
+          <Accordion.Header className='accordion-header' onClick={headerClick}>{prop.info.location}<span style={{color:'red'}}>{" "+prop.info.openTime}</span></Accordion.Header>
           <Accordion.Body>
             <ReactECharts option={option} />
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion>
     )
 }
 
