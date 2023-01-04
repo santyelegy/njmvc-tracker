@@ -1,10 +1,31 @@
 
+:root {
+  --headerheight: 50px;
+}
 .App {
   text-align: center;
 }
-
-.rowC{display:flex; flex-direction:row;}
+.App-header{
+  height: var(--headerheight);
+}
+.rowC{
+  display:flex; 
+  flex-direction:row;
+  height: calc(100vh - var(--headerheight));
+  margin-right: 0px;
+}
 
 .accordion-header{
   white-space: pre;
+}
+
+.container{
+ padding-left: 0px;
+ padding-right: 0px;
+ overflow-y: scroll;
+ position: relative;
+}
+
+.mapwrapper{
+  height: calc(100vh - var(--headerheight));
 }

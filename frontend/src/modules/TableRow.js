@@ -37,7 +37,7 @@ function TableRow( prop ) {
         ]
     };
     return (
-        <Accordion.Item eventKey={prop.index.toString()}>
+        <Accordion.Item eventKey={prop.index.toString()} id={prop.info.location}>
           <Accordion.Header className='accordion-header' onClick={headerClick}>{prop.info.location}<span style={{color:'red'}}>{" "+prop.info.openTime}</span></Accordion.Header>
           <Accordion.Body>
             <ReactECharts option={option} />

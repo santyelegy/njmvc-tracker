@@ -4,7 +4,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <a>New Jersey Driving Licence Appointment Tracker</a>
+        <h1>New Jersey Driving Licence Appointment Tracker</h1>
       </header>
       <div>
         <Table />

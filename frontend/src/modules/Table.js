@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import TableRow from "./TableRow";
-import { default as BSTable } from 'react-bootstrap/Table';
 import Accordion from 'react-bootstrap/Accordion';
 import MapWrapper from "./MapWrapper";
+import Container from 'react-bootstrap/Container';
 
 function Table(props) {
     //Load data
     const ref = React.useRef(null);
     const [map, setMap] = React.useState();
-    const [center,setcenter]=useState({lat: 39.833851,lng: -74.871826});
-    const [zoom,setzoom]=useState(8);
-    const [activeKey,setactiveKey]=useState(null);
+    const [center, setcenter] = useState({ lat: 39.833851, lng: -74.871826 });
+    const [zoom, setzoom] = useState(8);
+    const [activeKey, setactiveKey] = useState(null);
     useEffect(() => {
         if (ref.current && !map) {
             setMap(new window.google.maps.Map(ref.current, {}));
         }
     }, [ref, map]);
-    let [mvcs, setmvc] = useState([]) 
+    let [mvcs, setmvc] = useState([])
     let [times, settime] = useState([])
     let [historys, sethistory] = useState([])
-    let [outputs,setoutputs]=useState([])
-    let [MVCToIndex,setMVCToIndex]=useState({})
+    let [outputs, setoutputs] = useState([])
+    let [MVCToIndex, setMVCToIndex] = useState({})
     let getLocation = async () => {
         let response = await fetch('http://127.0.0.1:8000/api/mvc/')
         let data = await response.json()
@@ -35,17 +35,17 @@ function Table(props) {
         let response = await fetch('http://127.0.0.1:8000/api/history/')
         let time = await response.json()
         sethistory(time)
-    }    
+    }
 
-    
+
     useEffect(() => {
         getLocation();
         getTime();
         getHistory();
-        
+
     }, [])
-    useEffect(()=>{
-        let processInputData =() =>{
+    useEffect(() => {
+        let processInputData = () => {
             var IdToName = {};
             for (let i = 0; i < mvcs.length; i++) {
                 var processing = mvcs[i];
@@ -70,50 +70,41 @@ function Table(props) {
                 output["openTime"] = processing["time"];
                 output["location"] = IdToName[locationId]["name"].split("-")[0];
                 output["history"] = IdToHistory[locationId];
-                output["position"]= {lat:IdToName[locationId]["lat"],lng:IdToName[locationId]["long"]}
-                output["locationId"]=locationId
+                output["position"] = { lat: IdToName[locationId]["lat"], lng: IdToName[locationId]["long"] }
+                output["locationId"] = locationId
                 outputs.push(output);
             }
-            let newmapping={}
-            for(let i=0;i<outputs.length;i++){
-                newmapping[outputs[i].locationId]=i.toString();
+            let newmapping = {}
+            for (let i = 0; i < outputs.length; i++) {
+                newmapping[outputs[i].locationId] = i.toString();
             }
             setoutputs(outputs)
             setMVCToIndex(newmapping);
         }
         processInputData()
-    },[mvcs,historys,times])
+    }, [mvcs, historys, times])
 
-    
-    
-    
+
+
+
     //end load data
     const tableBody = outputs.map((info, index) => {
-        
+
         return (
             <TableRow key={index} info={info} index={index} setcenter={setcenter}
-            setzoom={setzoom} setactiveKey={setactiveKey}/>
+                setzoom={setzoom} setactiveKey={setactiveKey} />
         );
     });
     return (
         <div className="rowC">
-        <MapWrapper mvcs={mvcs} center={center} zoom={zoom} setactiveKey={setactiveKey}
-        MVCToIndex={MVCToIndex}/>
-        <BSTable striped bordered hover>
-            <thead>
-                <tr>
-                    <th scope="col">Location</th>
-                    <th scope="col">Earliest Date</th>
-                    <th scope="col">Newest Fetch</th>
-                    <th scope="col">Date Ahead</th>
-                </tr>
-            </thead>
-            <th colSpan="4">
-            <Accordion activeKey={activeKey}>
-                {tableBody}
-            </Accordion>
-            </th>
-        </BSTable>
+            <MapWrapper mvcs={mvcs} center={center} zoom={zoom} setactiveKey={setactiveKey}
+                MVCToIndex={MVCToIndex} />
+            <Container fluid className="container">
+                <h3>All MVC</h3>
+                    <Accordion activeKey={activeKey} >
+                        {tableBody}
+                    </Accordion>
+            </Container>
         </div>
     );
 }
