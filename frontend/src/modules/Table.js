@@ -69,6 +69,7 @@ function Table(props) {
                 var output = {}
                 output["openTime"] = processing["time"];
                 output["location"] = IdToName[locationId]["name"].split("-")[0];
+                output["url"]=IdToName[locationId]["locationId"];
                 output["history"] = IdToHistory[locationId];
                 output["position"] = { lat: IdToName[locationId]["lat"], lng: IdToName[locationId]["long"] }
                 output["locationId"] = locationId
