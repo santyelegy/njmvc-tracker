@@ -58,7 +58,7 @@ function TableRow(prop) {
                 <ReactECharts option={option} />
                 <a>Average waiting day : {average_waiting_day}</a>
                 <Button href={"https://telegov.njportal.com/njmvc/AppointmentWizard/15/".concat(prop.info.url.toString())}>Go To NJMVC</Button>
-                <Button>Email notification</Button>
+                <Button href={"http://127.0.0.1:3000/register/".concat(prop.info["locationId"].toString())}>Email notification</Button>
             </Accordion.Body>
         </Accordion.Item>
     )

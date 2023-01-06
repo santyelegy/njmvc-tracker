@@ -5,4 +5,5 @@ urlpatterns=[
     path('mvc/',views.getMVC,name="MVC-data"),
     path('time/',views.getTime,name="Time-data"),
     path('history/',views.getHistory,name="History-data"),
+    path('register/',views.createRegister,name="create-record"),
 ]
