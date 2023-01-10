@@ -7,6 +7,7 @@ import {
   Route
 } from "react-router-dom";
 function App() {
+  document.title="NJ MVC Tracker";
   return (
     <Router>
       <div className="App">

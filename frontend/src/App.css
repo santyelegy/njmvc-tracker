@@ -29,3 +29,11 @@
 .mapwrapper{
   height: calc(100vh - var(--headerheight));
 }
+.register-main{
+  background-size: cover;
+  background-image: url(/public/background.png);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - var(--headerheight));
+}

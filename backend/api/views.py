@@ -53,5 +53,5 @@ def createRegister(request):
         server.starttls(context=context)
         server.ehlo()  # Can be omitted
         server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, message)
+        #server.sendmail(sender_email, receiver_email, message)
     return Response("success")

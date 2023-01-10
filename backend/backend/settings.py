@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3!fm^fc_9lu^f^+7^7bi)_(3wr+s(^4fqz#4oh^l4p(9#lh0ds'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
 
@@ -138,4 +138,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'njmvctracker@gmail.com'
-EMAIL_HOST_PASSWORD = 'Rr123456'
+EMAIL_HOST_PASSWORD = 'sxcnkrjrgipgpeho'
